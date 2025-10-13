@@ -621,6 +621,43 @@ def resize_and_compute_masks(dP, cellprob, niter=200, cellprob_threshold=0.0,
     return mask
 
 
+def compute_p(dP, cellprob, p=None, niter=200, cellprob_threshold=0.0,
+                  flow_threshold=0.4, do_3D=False, min_size=-1,
+                  max_size_fraction=0.4, device=torch.device("cpu")):
+    """Compute ps using dynamics from dP and cellprob.
+
+    Args:
+        dP (numpy.ndarray): The dynamics flow field array.
+        cellprob (numpy.ndarray): The cell probability array.
+        p (numpy.ndarray, optional): The pixels on which to run dynamics. Defaults to None
+        niter (int, optional): The number of iterations for mask computation. Defaults to 200.
+        cellprob_threshold (float, optional): The threshold for cell probability. Defaults to 0.0.
+        flow_threshold (float, optional): The threshold for quality control metrics. Defaults to 0.4.
+        interp (bool, optional): Whether to interpolate during dynamics computation. Defaults to True.
+        do_3D (bool, optional): Whether to perform mask computation in 3D. Defaults to False.
+        min_size (int, optional): The minimum size of the masks. Defaults to 15.
+        max_size_fraction (float, optional): Masks larger than max_size_fraction of
+            total image size are removed. Default is 0.4.
+        device (torch.device, optional): The device to use for computation. Defaults to torch.device("cpu").
+
+    Returns:
+        tuple: A tuple containing the computed masks and the final pixel locations.
+    """
+    
+    if (cellprob > cellprob_threshold).sum():  #mask at this point is a cell cluster binary map, not labels
+        inds = np.nonzero(cellprob > cellprob_threshold)
+        if len(inds[0]) == 0:
+            dynamics_logger.info("No cell pixels found.")
+            shape = cellprob.shape
+            mask = np.zeros(shape, "uint16")
+            return mask
+
+        p_final = follow_flows(dP * (cellprob > cellprob_threshold) / 5., 
+                               inds=inds, niter=niter, 
+                                device=device)
+    return p_final  
+
+
 def compute_masks(dP, cellprob, p=None, niter=200, cellprob_threshold=0.0,
                   flow_threshold=0.4, do_3D=False, min_size=-1,
                   max_size_fraction=0.4, device=torch.device("cpu")):

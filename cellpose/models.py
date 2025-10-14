@@ -527,6 +527,7 @@ class CellposeModel():
                     flow_threshold=flow_threshold, resize=resize,
                     min_size=min_size0, max_size_fraction=max_size_fraction,
                     device=self.device)
+                p_final = dynamics.compute_p()
                 if i==0 and nimg > 1:
                     masks = np.zeros((nimg, shape[1], shape[2]), outputs.dtype)
                 if nimg > 1:
@@ -553,4 +554,4 @@ class CellposeModel():
         if changed_device_from is not None:
             models_logger.info("switching back to device %s" % self.device)
             self.device = torch.device(changed_device_from)
-        return masks
+        return masks, p_final

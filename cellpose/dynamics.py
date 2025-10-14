@@ -633,7 +633,6 @@ def compute_p(dP, cellprob, p=None, niter=200, cellprob_threshold=0.0,
         niter (int, optional): The number of iterations for mask computation. Defaults to 200.
         cellprob_threshold (float, optional): The threshold for cell probability. Defaults to 0.0.
         flow_threshold (float, optional): The threshold for quality control metrics. Defaults to 0.4.
-        interp (bool, optional): Whether to interpolate during dynamics computation. Defaults to True.
         do_3D (bool, optional): Whether to perform mask computation in 3D. Defaults to False.
         min_size (int, optional): The minimum size of the masks. Defaults to 15.
         max_size_fraction (float, optional): Masks larger than max_size_fraction of
@@ -641,7 +640,7 @@ def compute_p(dP, cellprob, p=None, niter=200, cellprob_threshold=0.0,
         device (torch.device, optional): The device to use for computation. Defaults to torch.device("cpu").
 
     Returns:
-        tuple: A tuple containing the computed masks and the final pixel locations.
+        tuple: A tuple containing final pixel locations.
     """
     
     if (cellprob > cellprob_threshold).sum():  #mask at this point is a cell cluster binary map, not labels

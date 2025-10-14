@@ -655,6 +655,12 @@ def compute_p(dP, cellprob, p=None, niter=200, cellprob_threshold=0.0,
         p_final = follow_flows(dP * (cellprob > cellprob_threshold) / 5., 
                                inds=inds, niter=niter, 
                                 device=device)
+    else:  # nothing to compute, just make it compatible
+        dynamics_logger.info("No cell pixels found.")
+        shape = cellprob.shape
+        p_final = np.zeros(cellprob.shape, "uint16")
+
+      
     return p_final  
 
 

@@ -521,14 +521,14 @@ class CellposeModel():
             for i in iterator:
                 # turn off min_size for 3D stitching
                 min_size0 = min_size if stitch_threshold == 0 or nimg == 1 else -1
+                p_final = dynamics.compute_p(dP[:, i], cellprob[i], None, niter=niter, cellprob_threshold=cellprob_threshold,
+                    flow_threshold=flow_threshold, False, min_size=min_size0, max_size_fraction=max_size_fraction,
+                    device=self.device)
                 outputs = dynamics.resize_and_compute_masks(
                     dP[:, i], cellprob[i],
                     niter=niter, cellprob_threshold=cellprob_threshold,
                     flow_threshold=flow_threshold, resize=resize,
                     min_size=min_size0, max_size_fraction=max_size_fraction,
-                    device=self.device)
-                p_final = dynamics.compute_p(dP[:, i], cellprob[i], p=None, niter=niter, cellprob_threshold=cellprob_threshold,
-                    flow_threshold=flow_threshold, False, min_size=min_size0, max_size_fraction=max_size_fraction,
                     device=self.device)
                 if i==0 and nimg > 1:
                     masks = np.zeros((nimg, shape[1], shape[2]), outputs.dtype)

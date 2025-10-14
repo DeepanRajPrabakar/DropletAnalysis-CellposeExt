@@ -491,6 +491,14 @@ class CellposeModel():
             models_logger.info("network run in %2.2fs" % (net_time))
 
         return dP, cellprob, styles
+
+    def _compute_pfinal(self, shape, dP, cellprob, flow_threshold=0.4, cellprob_threshold=0.0,
+                       min_size=15, max_size_fraction=0.4, niter=None,
+                       do_3D=False, stitch_threshold=0.0):
+        p_final = dynamics.compute_p(dP[:, i], cellprob[i], niter=niter, cellprob_threshold=cellprob_threshold,
+                    flow_threshold=flow_threshold, min_size=min_size0, max_size_fraction=max_size_fraction,
+                    device=self.device)
+        return p_final
     
     def _compute_masks(self, shape, dP, cellprob, flow_threshold=0.4, cellprob_threshold=0.0,
                        min_size=15, max_size_fraction=0.4, niter=None,
@@ -521,9 +529,6 @@ class CellposeModel():
             for i in iterator:
                 # turn off min_size for 3D stitching
                 min_size0 = min_size if stitch_threshold == 0 or nimg == 1 else -1
-                p_final = dynamics.compute_p(dP[:, i], cellprob[i], None, niter=niter, cellprob_threshold=cellprob_threshold,
-                    flow_threshold=flow_threshold, False, min_size=min_size0, max_size_fraction=max_size_fraction,
-                    device=self.device)
                 outputs = dynamics.resize_and_compute_masks(
                     dP[:, i], cellprob[i],
                     niter=niter, cellprob_threshold=cellprob_threshold,
@@ -556,4 +561,4 @@ class CellposeModel():
         if changed_device_from is not None:
             models_logger.info("switching back to device %s" % self.device)
             self.device = torch.device(changed_device_from)
-        return masks, p_final
+        return masks

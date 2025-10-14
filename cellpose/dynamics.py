@@ -621,8 +621,8 @@ def resize_and_compute_masks(dP, cellprob, niter=200, cellprob_threshold=0.0,
     return mask
 
 
-def compute_p(dP, cellprob, p=None, niter=200, cellprob_threshold=0.0,
-                  flow_threshold=0.4, do_3D=False, min_size=-1,
+def compute_p(dP, cellprob, niter=200, cellprob_threshold=0.0,
+                  flow_threshold=0.4, min_size=-1,
                   max_size_fraction=0.4, device=torch.device("cpu")):
     """Compute ps using dynamics from dP and cellprob.
 

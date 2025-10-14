@@ -492,9 +492,9 @@ class CellposeModel():
 
         return dP, cellprob, styles
 
-    def _compute_pfinal(self, shape, dP, cellprob, flow_threshold=0.4, cellprob_threshold=0.0,
+    def _compute_pfinal(self, dP, cellprob, flow_threshold=0.4, cellprob_threshold=0.0,
                        min_size=15, max_size_fraction=0.4, niter=None,
-                       do_3D=False, stitch_threshold=0.0):
+                       do_3D=False):
         p_final = dynamics.compute_p(dP[:, i], cellprob[i], niter=niter, cellprob_threshold=cellprob_threshold,
                     flow_threshold=flow_threshold, min_size=min_size0, max_size_fraction=max_size_fraction,
                     device=self.device)

@@ -527,7 +527,9 @@ class CellposeModel():
                     flow_threshold=flow_threshold, resize=resize,
                     min_size=min_size0, max_size_fraction=max_size_fraction,
                     device=self.device)
-                p_final = dynamics.compute_p()
+                p_final = dynamics.compute_p(dP[:, i], cellprob[i], p=None, niter=niter, cellprob_threshold=cellprob_threshold,
+                    flow_threshold=flow_threshold, False, min_size=min_size0, max_size_fraction=max_size_fraction,
+                    device=self.device)
                 if i==0 and nimg > 1:
                     masks = np.zeros((nimg, shape[1], shape[2]), outputs.dtype)
                 if nimg > 1:
